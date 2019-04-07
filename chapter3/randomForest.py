@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-import plotDecisionRegions as pdr 
-from sklearn.linear_model import Perceptron
+import plotDecisionRegions as pdr
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn import datasets
 from sklearn.preprocessing import StandardScaler
@@ -23,14 +23,17 @@ X_train_std = sc.transform(X_train)
 X_test_std = sc.transform(X_test)
 
 # modeling
-ppn = Perceptron(n_iter = 40, eta0 = 0.01, random_state = 1)
-ppn.fit(X_train_std, y_train)
+forest = RandomForestClassifier(criterion = 'gini',
+				n_estimators = 25,
+				random_state = 1,
+				n_jobs = 2)
+forest.fit(X_train_std, y_train)
 
 X_combined_std = np.vstack((X_train_std, X_test_std))
 y_combined = np.hstack((y_train, y_test))
 pdr.plot_decision_regions(X = X_combined_std,
 			y = y_combined, 
-			classifier = ppn,
+			classifier = forest,
 			test_idx = range(105, 150))
 plt.xlabel('petal length [standardized]')
 plt.ylabel('petal width [standardized]')

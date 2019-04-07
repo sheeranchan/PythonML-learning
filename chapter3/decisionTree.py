@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
-import plotDecisionRegions as pdr 
-from sklearn.linear_model import Perceptron
+from matplotlib.colors import ListedColormap 
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn import datasets
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import numpy as np
+import plotDecisionRegions as pdr
 
 # get training dataset from sklearn library
 iris = datasets.load_iris()
@@ -23,14 +24,16 @@ X_train_std = sc.transform(X_train)
 X_test_std = sc.transform(X_test)
 
 # modeling
-ppn = Perceptron(n_iter = 40, eta0 = 0.01, random_state = 1)
-ppn.fit(X_train_std, y_train)
+tree = DecisionTreeClassifier(criterion = 'gini',
+				max_depth = 4, 
+				random_state = 1)
+tree.fit(X_train_std, y_train)
 
 X_combined_std = np.vstack((X_train_std, X_test_std))
 y_combined = np.hstack((y_train, y_test))
 pdr.plot_decision_regions(X = X_combined_std,
 			y = y_combined, 
-			classifier = ppn,
+			classifier = tree,
 			test_idx = range(105, 150))
 plt.xlabel('petal length [standardized]')
 plt.ylabel('petal width [standardized]')
